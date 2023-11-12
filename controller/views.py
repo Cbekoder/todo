@@ -1,44 +1,67 @@
 from django.shortcuts import render, redirect, reverse
-from django.contrib.auth.decorators import login_required, wraps
+from django.contrib.auth import authenticate, login, logout
 from .models import *
-def my_login_required(redirect_url=None):
-    def decorator(view_func):
-        @wraps(view_func)
-        def _wrapped_view(request, *args, **kwargs):
-            if not request.user.is_authenticated:
-                return redirect(redirect_url or reverse('login'))
-            return view_func(request, *args, **kwargs)
-        return _wrapped_view
-    return decorator
 
-def login(request):
+def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        usernames = users.objects.all().values(login)
-        if username in usernames:
-            passwo = users.objects.get(login = username)
-            if passwo == password:
-        # user = authenticate(request, username=username, password=password)
-        # if user is not None:
-        #     login(request, user)
-                return redirect('home')
-        else:
-            # messages =  'Invalid username or password'
-            return render(request, 'login.html')
+        user = authenticate(
+            username = request.POST.get('l'),
+            password = request.POST.get('p')
+        )
+        if user is None:
+            return redirect("/login/")
+        login(request, user)
+        return redirect('/')
     else:
         return render(request, 'login.html')
 
-# @my_login_required(redirect_url='login/')
 def home(request):
-    return render(request, 'index.html')
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            if request.POST.get("name") != None and request.POST.get("date") != None:
+                Tasks.objects.create(
+                    title = request.POST.get("name"),
+                    date = request.POST.get("date"),
+                    text = request.POST.get("details"),
+                    condition = request.POST.get("status"),
+                    userid = request.user,
+                )
+            return redirect('/')
+        content = {
+            'tasks' : Tasks.objects.filter(userid = request.user),
+            'username' : request.user.username.capitalize()
+        }
+        return render(request, 'index.html', content)
+    return redirect("/login")
 
-def edit(request):
-    return render(request, 'edit.html')
+def edit(request, id):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            ts = Tasks.objects.get(id=id)
+            ts.title = request.POST.get('name')
+            ts.text = request.POST.get('detail')
+            ts.condition = request.POST.get('status')
+            ts.save()
+            return redirect('/')
+        content = {
+            'task' : Tasks.objects.get(id = id),
+            'username' : request.user.username.capitalize()
+        }
+        return render(request, 'edit.html', content)
+    return redirect("/login")
+
+def delete(request, id):
+    if request.user.is_authenticated:
+        ts = Tasks.objects.get(id=id)
+        if ts.userid == request.user:
+            ts.delete()
+            return redirect('/')
+    return redirect('/')
 
 def signup(request):
     return render(request, 'signup.html')
 
-# def login(request):
-#     return render(request, 'login.html')
+def logout_view(request):
+    logout(request)
+    return redirect('/')
 

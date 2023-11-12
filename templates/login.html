@@ -53,11 +53,11 @@
 <body>
 	<div class="container">
 		<h1>Login Page</h1>
-		<form method="post" action="/login">
+		<form method="post">{% csrf_token %}
 			<label for="username">Username:</label>
-			<input type="text" name="username" id="username" placeholder="Enter username ...">
+			<input type="text" name="l" id="username" placeholder="Enter username ...">
 			<label for="password">Password:</label>
-			<input type="password" name="password" id="password" placeholder="Enter password ...">
+			<input type="password" name="p" id="password" placeholder="Enter password ...">
 			<a href="/"><button>Login</button></a>
 		</form>
 		<p><a href="/register">Register</a></p>

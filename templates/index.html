@@ -10,15 +10,15 @@
         <div class="head">
             <h1>To-Do List</h1>
             <div style="display: flex; align-items: center;">
-                <h3>User</h3>
-                <a href="/" style="text-decoration: none; color: red;">
+                <h3>{{ username }}</h3>
+                <a href="/logout/" style="text-decoration: none; color: red;">
                 Log out
                 </a>
             </div>
       </div>
 
       <div class="task-add">
-        <form id="task-form" method="post">
+        <form id="task-form" method="post">{% csrf_token %}
             <div class="form1">
               <input type="text" name="name" placeholder="Add Task...">
               <input type="date" name="date">
@@ -41,42 +41,26 @@
           </form>
       </div>
       <hr style="margin: 10px 5px;">
-      <div class="task">
-        <ul id="task-list">
-          <li>
-              <div>
-                  Task-name
-              </div>
-              <div>
-                    <input type="text" value="Completed" readonly >
-                    <input type="date" value="2023-03-06" readonly>
-                    <button type="submit" class="edit"><a href="/edit/">Edit</a></button>
-                    <button type="submit" class="delete"><a href="/edit/">Delete</a></button>
-              </div>
-          </li>
-        </ul>
-        <ul class="details"> 
-            Task-Details: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veniam, eaque?
-        </ul>
-      </div>
-      <div class="task">
-        <ul id="task-list1">
-          <li>
-              <div>
-                  Task-name
-              </div>
-              <div>
-                    <input type="text" value="In progress" readonly>
-                    <input type="date" value="2023-03-06" readonly>
-                    <button type="submit" class="edit"><a href="/edit/">Edit</a></button>
-                    <button type="submit" class="delete"><a href="/edit/">Delete</a></button>
-              </div>
-          </li>
-        </ul>
-        <ul class="details"> 
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime molestiae molestias explicabo recusandae a perspiciatis beatae dolorem vitae. Reprehenderit, numquam? 
-        </ul>
-      </div>
+        {% for task in tasks %}
+          <div class="task">
+            <ul id="task-list">
+              <li>
+                  <div>
+                      {{ task.title }}
+                  </div>
+                  <div>
+                        <input type="text" value="{{ task.condition }}" readonly >
+                        <input type="text" value="{{ task.date }}" readonly>
+                        <button type="submit" class="edit"><a href="/edit/{{ task.id }} ">Edit</a></button>
+                        <button type="submit" class="delete"><a href="/delete/{{ task.id }}">Delete</a></button>
+                  </div>
+              </li>
+            </ul>
+            <ul class="details">
+                {{ task.text }}
+            </ul>
+          </div>
+        {% endfor %}
     </div>
   </body>
 </html>

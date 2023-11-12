@@ -8,23 +8,31 @@
   <body>
     <div class="container">
       <h1>Edit Task</h1>
-      <form>
+      <form id="task-edit" method="post">{% csrf_token %}
         <div class="form-group">
           <label for="task-name">Task Name</label>
-          <input type="text" id="task-name" placeholder="Enter task name...">
+          <input type="text" id="task-name" name="name" value="{{ task.title }}">
           <label for="task-details">Task Detail</label>
-          <input type="text" id="task-details" placeholder="Enter task details...">
+          <input type="text" id="task-details" name="detail" value="{{ task.text }}">
         </div>
-        <div class="form-group">
-          <label for="status">Status</label>
-          <select id="status">
-            <option>Not started</option>
-            <option>In Progress</option>
-            <option>Completed</option>
+<!--        <div class="form-group">-->
+<!--          <label for="status">Status</label>-->
+<!--          <select id="status">-->
+<!--            <option>Not started</option>-->
+<!--            <option>In Progress</option>-->
+<!--            <option>Completed</option>-->
+<!--          </select>-->
+<!--        </div>-->
+        <div class=“form-group”>
+          <label for=“status”>Status</label>
+          <select id=“status” name="status">
+            <option {% if task.condition == "Not started" %} selected {% endif %}>Not started</option>
+            <option {% if task.condition == "In Progress" %} selected {% endif %}>In Progress</option>
+            <option {% if task.condition == "Completed" %} selected {% endif %}>Completed</option>
           </select>
         </div>
         <button type="submit" class="btn">Save</button>
-        <a href="#" class="btn cancel" style="text-decoration: none;">Cancel</a>
+        <a href="/" class="btn cancel" style="text-decoration: none;">Cancel</a>
       </form>
     </div>
   </body>

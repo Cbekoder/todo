@@ -21,7 +21,9 @@ from controller.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home),
-    path('edit/', edit),
-    path('login/', login),
+    path('edit/<int:id>', edit),
+    path('login/', login_view),
+    path('logout/', logout_view),
     path('register/', signup),
+    path('delete/<int:id>', delete),
 ]
